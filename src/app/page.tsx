@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Library from "../components/Library";
+import Footer from "../components/Footer";
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -176,8 +177,11 @@ export default function Home() {
 
         </section>
 
-        {/* ================= LIBRARY ================= */}
+        {}
         <Library />
+
+        {}
+        <Footer />
 
       </div>
     </main>
