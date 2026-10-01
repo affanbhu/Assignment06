@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@plugin "daisyui";
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #191a1c;
+}
+
+body {
+  min-height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+}
