@@ -1,9 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import Library from "../components/Library";
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // These will later connect to your actual workout data
+  const todayPlanCount = 0;
+  const savedCount = 0;
 
   return (
     <main className="min-h-screen bg-[#191a1c] text-white">
@@ -26,37 +32,50 @@ export default function Home() {
 
             {/* Desktop Navigation */}
             <div className="hidden items-center gap-3 md:flex">
+
               <button className="rounded-full bg-[#18250d] px-5 py-1.5 text-[11px] font-semibold text-lime-400">
                 Workouts
               </button>
 
-              <button className="px-3 py-1.5 text-[11px] text-gray-400 hover:text-white">
+              <Link
+                href="/my-plan"
+                className="px-3 py-1.5 text-[11px] text-gray-400 hover:text-white"
+              >
                 My Plan
-              </button>
+              </Link>
+
             </div>
 
             {/* Right Side */}
             <div className="hidden items-center gap-5 md:flex">
 
-              <div className="flex items-center gap-2 text-[10px] text-gray-300">
+              {/* Plan */}
+              <Link
+                href="/my-plan"
+                className="flex items-center gap-2 text-[10px] text-gray-300 hover:text-white"
+              >
                 <span>Plan</span>
 
                 <span className="flex h-4 w-4 items-center justify-center rounded-full bg-lime-400 text-[9px] font-bold text-black">
-                  0
+                  {todayPlanCount}
                 </span>
-              </div>
+              </Link>
 
-              <div className="flex items-center gap-2 text-[10px] text-gray-400">
+              {/* Saved */}
+              <Link
+                href="/my-plan"
+                className="flex items-center gap-2 text-[10px] text-gray-400 hover:text-white"
+              >
                 <span>Saved</span>
 
                 <span className="flex h-4 w-4 items-center justify-center rounded-full border border-gray-700 text-[9px]">
-                  0
+                  {savedCount}
                 </span>
-              </div>
+              </Link>
 
             </div>
 
-            {/* Mobile Button */}
+            {/* Mobile Menu Button */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               className="text-xl text-white md:hidden"
@@ -69,33 +88,44 @@ export default function Home() {
           {/* Mobile Menu */}
           {menuOpen && (
             <div className="border-t border-[#1d1f23] px-6 py-4 md:hidden">
+
               <div className="flex flex-col gap-3">
 
                 <button className="rounded-lg bg-[#18250d] px-4 py-3 text-left text-lime-400">
                   Workouts
                 </button>
 
-                <button className="px-4 py-2 text-left text-gray-400">
+                <Link
+                  href="/my-plan"
+                  className="px-4 py-2 text-gray-400"
+                >
                   My Plan
-                </button>
+                </Link>
 
-                <div className="border-t border-gray-800 pt-3 text-sm text-gray-400">
-                  Plan{" "}
-                  <span className="text-lime-400">
-                    0
-                  </span>
-
-                  <span className="ml-5">
-                    Saved{" "}
-                    <span className="text-gray-300">
-                      0
+                <Link
+                  href="/my-plan"
+                  className="flex items-center justify-between border-t border-gray-800 pt-3 text-sm text-gray-400"
+                >
+                  <span>
+                    Plan{" "}
+                    <span className="text-lime-400">
+                      {todayPlanCount}
                     </span>
                   </span>
-                </div>
+
+                  <span>
+                    Saved{" "}
+                    <span className="text-gray-300">
+                      {savedCount}
+                    </span>
+                  </span>
+                </Link>
 
               </div>
+
             </div>
           )}
+
         </header>
 
         {/* ================= SPACE ================= */}
@@ -106,7 +136,7 @@ export default function Home() {
 
           <div className="mx-auto flex min-h-[315px] max-w-[1120px] overflow-hidden rounded-xl border border-[#25282d] bg-[#16181d]">
 
-            {/* LEFT CONTENT */}
+            {/* LEFT SIDE */}
             <div className="flex w-full flex-col justify-center px-10 py-12 md:w-[62%]">
 
               <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.12em] text-lime-400">
@@ -131,18 +161,23 @@ export default function Home() {
 
             </div>
 
-            {/* RIGHT SIDE - YOUR PNG */}
+            {/* RIGHT SIDE - PNG */}
             <div className="hidden w-[38%] items-center justify-center md:flex">
+
               <img
                 src="/banner.png"
                 alt="Workout illustration"
                 className="h-[280px] w-[280px] object-contain"
               />
+
             </div>
 
           </div>
 
         </section>
+
+        {/* ================= LIBRARY ================= */}
+        <Library />
 
       </div>
     </main>
