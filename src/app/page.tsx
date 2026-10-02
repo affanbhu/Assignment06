@@ -8,9 +8,10 @@ export default function Home() {
     <>
       <Navbar />
 
-      <main className="min-h-screen bg-[#191a1c]">
+      {/* PAGE BACKGROUND */}
+      <main className="min-h-screen bg-black">
         {/* HERO */}
-        <section className="px-6 pb-8">
+        <section className="px-4 pb-8 pt-6 sm:px-6 sm:pt-8">
           <div className="mx-auto flex min-h-[315px] max-w-[1120px] flex-col overflow-hidden rounded-xl border border-[#25282d] bg-[#16181d] md:flex-row">
 
             {/* LEFT SIDE */}
@@ -19,7 +20,7 @@ export default function Home() {
                 WORKOUT LIBRARY
               </p>
 
-              <h1 className="max-w-[520px] font-['Oswald'] text-4xl font-bold uppercase leading-[0.95] tracking-tight text-white md:text-5xl">
+              <h1 className="max-w-[520px] font-['Oswald'] text-4xl font-bold uppercase leading-[0.95] tracking-tight text-white sm:text-5xl">
                 TRAIN WITH INTENT. LOG EVERY SET.
               </h1>
 
@@ -44,14 +45,16 @@ export default function Home() {
               <img
                 src="/banner.png"
                 alt="Workout illustration"
-                className="h-[220px] w-[220px] object-contain md:h-[280px] md:w-[280px]"
+                className="h-[220px] w-[220px] object-contain sm:h-[250px] sm:w-[250px] md:h-[280px] md:w-[280px]"
               />
             </div>
           </div>
         </section>
 
         {/* WORKOUT LIBRARY */}
-        <Library />
+        <div id="library">
+          <Library />
+        </div>
       </main>
 
       {/* FOOTER */}
