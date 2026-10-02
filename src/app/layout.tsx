@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import "../globals.css";
+import Navbar from "../components/shared/Navbar";
+import Footer from "../components/shared/footer";
 
 export const metadata: Metadata = {
-  title: "Assignment 6",
-  description: "My Assignment 6 website",
+  title: "FitLog",
+  description: "Workout Library",
 };
 
 export default function RootLayout({
@@ -13,7 +15,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <Navbar />
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }

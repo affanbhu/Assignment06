@@ -1,12 +1,9 @@
 
 import Library from "../components/Library";
-import Navbar from "../components/shared/Navbar";
-import Footer from "../components/Footer";
 
 export default function Home() {
   return (
     <>
-      <Navbar />
 
       {/* PAGE BACKGROUND */}
       <main className="min-h-screen bg-black">
@@ -58,7 +55,6 @@ export default function Home() {
       </main>
 
       {/* FOOTER */}
-      <Footer />
     </>
   );
 }

@@ -1,9 +1,8 @@
 const Footer = () => {
   return (
     <footer className="border-t border-gray-800 bg-[#1a1a1a] px-6 py-8">
-      <div className="mx-auto flex max-w-7xl items-center justify-between">
+      <div className="mx-auto flex max-w-[1200px] flex-col items-center justify-between gap-4 sm:flex-row">
 
-        {/* Logo */}
         <div className="flex items-center gap-2">
           <svg
             width="18"
@@ -26,8 +25,7 @@ const Footer = () => {
           </span>
         </div>
 
-        {/* Copyright */}
-        <p className="text-xs text-gray-500">
+        <p className="text-center text-xs text-gray-500 sm:text-right">
           © 2026 FitLog — Workout Library. Train hard, log honest.
         </p>
 
