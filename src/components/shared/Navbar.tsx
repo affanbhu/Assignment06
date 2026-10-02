@@ -10,11 +10,11 @@ export default function Navbar() {
 
   useEffect(() => {
     const updateCounts = () => {
-      const plan: number[] = JSON.parse(
+      const plan = JSON.parse(
         localStorage.getItem("todayPlan") || "[]"
       );
 
-      const saved: number[] = JSON.parse(
+      const saved = JSON.parse(
         localStorage.getItem("savedExercises") || "[]"
       );
 
@@ -24,14 +24,16 @@ export default function Navbar() {
 
     updateCounts();
 
-    // Update when localStorage changes
-    window.addEventListener("storage", updateCounts);
+    // Listen for updates from Details page and My Plan page
+    window.addEventListener("planUpdated", updateCounts);
+    window.addEventListener("savedUpdated", updateCounts);
 
-    // Update when user returns to the page
+    // Update when returning to the page
     window.addEventListener("focus", updateCounts);
 
     return () => {
-      window.removeEventListener("storage", updateCounts);
+      window.removeEventListener("planUpdated", updateCounts);
+      window.removeEventListener("savedUpdated", updateCounts);
       window.removeEventListener("focus", updateCounts);
     };
   }, []);
@@ -40,8 +42,11 @@ export default function Navbar() {
     <header className="mx-auto w-[calc(100%-32px)] max-w-[1600px] bg-black">
       <div className="relative flex min-h-[58px] items-center border-b border-[#1d1f23] px-4 sm:px-6 lg:px-8">
 
-        {/* Logo */}
-        <div className="flex shrink-0 items-center gap-2">
+        {/* LOGO */}
+        <Link
+          href="/"
+          className="flex shrink-0 items-center gap-2"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -95,12 +100,12 @@ export default function Navbar() {
           <span className="text-[13px] font-extrabold tracking-wide text-white">
             FITLOG
           </span>
-        </div>
+        </Link>
 
-        {/* Center Navigation */}
+        {/* CENTER NAVIGATION */}
         <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 md:flex">
 
-          {/* Workouts */}
+          {/* WORKOUTS */}
           <Link
             href="/"
             className="rounded-full bg-[#18250d] px-4 py-[5px] text-[9px] font-semibold text-lime-400"
@@ -108,7 +113,7 @@ export default function Navbar() {
             Workouts
           </Link>
 
-          {/* My Plan */}
+          {/* MY PLAN */}
           <Link
             href="/my-plan"
             className="px-4 py-[5px] text-[9px] text-gray-500 transition hover:text-white"
@@ -118,10 +123,10 @@ export default function Navbar() {
 
         </nav>
 
-        {/* Right Side */}
+        {/* RIGHT SIDE */}
         <div className="ml-auto hidden shrink-0 items-center gap-4 sm:gap-5 md:flex">
 
-          {/* Plan */}
+          {/* PLAN */}
           <Link
             href="/my-plan"
             className="flex items-center gap-2 text-[9px] text-gray-300 transition hover:text-white"
@@ -133,7 +138,7 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Saved */}
+          {/* SAVED */}
           <Link
             href="/my-plan"
             className="flex items-center gap-2 text-[9px] text-gray-500 transition hover:text-white"
@@ -147,7 +152,7 @@ export default function Navbar() {
 
         </div>
 
-        {/* Mobile Menu Button */}
+        {/* MOBILE MENU BUTTON */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           className="ml-auto flex items-center justify-center text-xl text-white md:hidden"
@@ -157,12 +162,12 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* MOBILE MENU */}
       {menuOpen && (
         <div className="border-b border-[#1d1f23] bg-black px-5 py-4 md:hidden">
           <div className="flex flex-col gap-2">
 
-            {/* Workouts */}
+            {/* WORKOUTS */}
             <Link
               href="/"
               onClick={() => setMenuOpen(false)}
@@ -171,7 +176,7 @@ export default function Navbar() {
               Workouts
             </Link>
 
-            {/* My Plan */}
+            {/* MY PLAN */}
             <Link
               href="/my-plan"
               onClick={() => setMenuOpen(false)}
@@ -180,7 +185,7 @@ export default function Navbar() {
               My Plan
             </Link>
 
-            {/* Mobile Plan */}
+            {/* PLAN */}
             <Link
               href="/my-plan"
               onClick={() => setMenuOpen(false)}
@@ -193,7 +198,7 @@ export default function Navbar() {
               </span>
             </Link>
 
-            {/* Mobile Saved */}
+            {/* SAVED */}
             <Link
               href="/my-plan"
               onClick={() => setMenuOpen(false)}
