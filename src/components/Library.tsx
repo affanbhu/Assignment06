@@ -20,6 +20,7 @@ export default function Library() {
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<SortOption>("Duration");
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetch("https://api.abcz.workers.dev/api/fitlog")
@@ -39,7 +40,27 @@ export default function Library() {
       });
   }, []);
 
-  const sortedExercises = [...exercises].sort((a, b) => {
+  // SEARCH BY WORKOUT NAME, MUSCLE GROUP OR EQUIPMENT
+  const filteredExercises = exercises.filter((exercise) => {
+    const searchText = search.toLowerCase().trim();
+
+    if (!searchText) {
+      return true;
+    }
+
+    const name = exercise.name.toLowerCase();
+    const equipment = exercise.equipment.toLowerCase();
+    const muscleGroups = exercise.muscleGroups.join(" ").toLowerCase();
+
+    return (
+      name.includes(searchText) ||
+      equipment.includes(searchText) ||
+      muscleGroups.includes(searchText)
+    );
+  });
+
+  // SORT WORKOUTS
+  const sortedExercises = [...filteredExercises].sort((a, b) => {
     if (sortBy === "Duration") {
       return b.duration - a.duration;
     }
@@ -54,8 +75,9 @@ export default function Library() {
   return (
     <section id="library" className="px-6 pb-12 pt-2">
       <div className="mx-auto max-w-[1120px]">
+
         {/* SECTION TITLE */}
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+        <div className="mb-6 flex flex-col gap-4">
           <div>
             <h2 className="text-2xl font-black uppercase tracking-tight text-white">
               THE LIBRARY
@@ -66,32 +88,47 @@ export default function Library() {
             </p>
           </div>
 
-          {/* SORT BY */}
-          <div className="flex items-center gap-3">
-            <label
-              htmlFor="sort-workouts"
-              className="text-[10px] font-bold uppercase tracking-wider text-gray-400"
-            >
-              Sort By
-            </label>
+          {/* SEARCH + SORT */}
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 
-            <div className="relative">
-              <select
-                id="sort-workouts"
-                value={sortBy}
-                onChange={(event) =>
-                  setSortBy(event.target.value as SortOption)
-                }
-                className="appearance-none rounded-md border border-[#292c31] bg-[#16181d] py-2 pl-3 pr-9 text-xs font-bold text-white outline-none transition hover:border-lime-400 focus:border-lime-400"
+            {/* SEARCH */}
+            <div className="relative w-full sm:max-w-[400px]">
+              <input
+                type="text"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Search by workout name or tag..."
+                className="w-full rounded-md border border-[#292c31] bg-[#16181d] px-4 py-3 text-xs text-white outline-none placeholder:text-gray-500 focus:border-lime-400"
+              />
+            </div>
+
+            {/* SORT BY */}
+            <div className="flex items-center gap-3">
+              <label
+                htmlFor="sort-workouts"
+                className="text-[10px] font-bold uppercase tracking-wider text-gray-400"
               >
-                <option value="Duration">Duration</option>
-                <option value="Calories">Calories</option>
-                <option value="Rating">Rating</option>
-              </select>
+                Sort By
+              </label>
 
-              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-lime-400">
-                ▼
-              </span>
+              <div className="relative">
+                <select
+                  id="sort-workouts"
+                  value={sortBy}
+                  onChange={(event) =>
+                    setSortBy(event.target.value as SortOption)
+                  }
+                  className="appearance-none rounded-md border border-[#292c31] bg-[#16181d] py-2 pl-3 pr-9 text-xs font-bold text-white outline-none transition hover:border-lime-400 focus:border-lime-400"
+                >
+                  <option value="Duration">Duration</option>
+                  <option value="Calories">Calories</option>
+                  <option value="Rating">Rating</option>
+                </select>
+
+                <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-lime-400">
+                  ▼
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -107,8 +144,20 @@ export default function Library() {
           </div>
         )}
 
+        {/* NO SEARCH RESULTS */}
+        {!loading && sortedExercises.length === 0 && (
+          <div className="py-16 text-center">
+            <p className="text-sm font-bold text-gray-400">
+              No workouts found.
+            </p>
+            <p className="mt-2 text-xs text-gray-600">
+              Try another workout name or tag.
+            </p>
+          </div>
+        )}
+
         {/* WORKOUT GRID */}
-        {!loading && (
+        {!loading && sortedExercises.length > 0 && (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {sortedExercises.map((exercise) => (
               <Link
@@ -117,6 +166,7 @@ export default function Library() {
                 className="block"
               >
                 <article className="h-full overflow-hidden rounded-xl border border-[#292c31] bg-[#16181d] transition duration-300 hover:-translate-y-1 hover:border-lime-400/60">
+
                   {/* IMAGE */}
                   <div className="h-[220px] w-full overflow-hidden bg-[#16181d]">
                     <img
@@ -128,6 +178,7 @@ export default function Library() {
 
                   {/* CONTENT */}
                   <div className="p-4">
+
                     {/* TAGS */}
                     <div className="mb-3 flex flex-wrap gap-2">
                       {exercise.muscleGroups.map((group, index) => (
@@ -158,6 +209,7 @@ export default function Library() {
                       <span>● {exercise.caloriesBurned} kcal</span>
                       <span>☆ {exercise.rating}</span>
                     </div>
+
                   </div>
                 </article>
               </Link>
