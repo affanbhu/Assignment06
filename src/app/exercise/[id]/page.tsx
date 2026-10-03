@@ -27,6 +27,7 @@ export default function ExerciseDetails() {
   const [exercise, setExercise] = useState<Exercise | null>(null);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState("");
+  const [planCount, setPlanCount] = useState(0);
 
   useEffect(() => {
     fetch("https://api.abcz.workers.dev/api/fitlog")
@@ -43,6 +44,24 @@ export default function ExerciseDetails() {
         console.error("Failed to load exercise:", error);
         setLoading(false);
       });
+
+    const updatePlanCount = () => {
+      const existingPlan: Exercise[] = JSON.parse(
+        localStorage.getItem("todayPlan") || "[]"
+      );
+
+      setPlanCount(existingPlan.length);
+    };
+
+    updatePlanCount();
+
+    window.addEventListener("planUpdated", updatePlanCount);
+    window.addEventListener("focus", updatePlanCount);
+
+    return () => {
+      window.removeEventListener("planUpdated", updatePlanCount);
+      window.removeEventListener("focus", updatePlanCount);
+    };
   }, [id]);
 
   const showToast = (message: string) => {
@@ -69,9 +88,18 @@ export default function ExerciseDetails() {
       return;
     }
 
+    // MAXIMUM 5 WORKOUTS
+    if (existingPlan.length >= 5) {
+      showToast("Today's plan is full (5/5)");
+      setPlanCount(5);
+      return;
+    }
+
     const updatedPlan = [...existingPlan, exercise];
 
     localStorage.setItem("todayPlan", JSON.stringify(updatedPlan));
+
+    setPlanCount(updatedPlan.length);
 
     window.dispatchEvent(new Event("planUpdated"));
 
@@ -136,6 +164,8 @@ export default function ExerciseDetails() {
       </main>
     );
   }
+
+  const planIsFull = planCount >= 5;
 
   return (
     <main className="min-h-screen bg-[#191a1c] px-6 py-8">
@@ -303,14 +333,23 @@ export default function ExerciseDetails() {
             {/* BUTTONS */}
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
 
+              {/* ADD TO PLAN */}
               <button
                 onClick={addToPlan}
-                className="flex items-center justify-center gap-2 rounded-md bg-lime-400 px-6 py-3 text-xs font-black uppercase tracking-wide text-black transition hover:bg-lime-300"
+                disabled={planIsFull}
+                className={`flex items-center justify-center gap-2 rounded-md px-6 py-3 text-xs font-black uppercase tracking-wide transition ${
+                  planIsFull
+                    ? "cursor-not-allowed bg-gray-600 text-gray-300"
+                    : "bg-lime-400 text-black hover:bg-lime-300"
+                }`}
               >
-                <span>＋</span>
-                Add to Today&apos;s Plan
+                <span>{planIsFull ? "✓" : "＋"}</span>
+                {planIsFull
+                  ? "Plan Full (5/5)"
+                  : "Add to Today's Plan"}
               </button>
 
+              {/* SAVE FOR LATER */}
               <button
                 onClick={saveForLater}
                 className="flex items-center justify-center gap-2 rounded-md border border-[#3a3d42] px-6 py-3 text-xs font-black uppercase tracking-wide text-white transition hover:border-lime-400 hover:text-lime-400"
@@ -320,6 +359,12 @@ export default function ExerciseDetails() {
               </button>
 
             </div>
+
+            {/* PLAN COUNT */}
+            <p className="mt-3 text-[9px] font-bold uppercase tracking-wider text-gray-600">
+              Today&apos;s plan: {planCount}/5 lifts
+            </p>
+
           </div>
         </div>
       </div>
