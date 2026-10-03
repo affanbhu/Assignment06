@@ -24,11 +24,8 @@ export default function Navbar() {
 
     updateCounts();
 
-    // Listen for updates from Details page and My Plan page
     window.addEventListener("planUpdated", updateCounts);
     window.addEventListener("savedUpdated", updateCounts);
-
-    // Update when returning to the page
     window.addEventListener("focus", updateCounts);
 
     return () => {
@@ -47,55 +44,11 @@ export default function Navbar() {
           href="/"
           className="flex shrink-0 items-center gap-2"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            className="h-[18px] w-[18px] text-lime-400"
-          >
-            <path
-              d="M5 8L16 19"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <path
-              d="M8 5L11 8"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <path
-              d="M5 8L8 11"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <path
-              d="M16 16L19 19"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <path
-              d="M13 13L16 16"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <path
-              d="M4 10L7 7"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <path
-              d="M17 17L20 14"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-          </svg>
+          <img
+            src="/logo.png"
+            alt="FitLog logo"
+            className="h-5 w-5 object-contain"
+          />
 
           <span className="text-[13px] font-extrabold tracking-wide text-white">
             FITLOG

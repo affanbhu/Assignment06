@@ -19,6 +19,8 @@ type Exercise = {
   instructions: string[];
 };
 
+type SortOption = "duration" | "calories" | "rating";
+
 export default function MyPlan() {
   const [todayPlan, setTodayPlan] = useState<Exercise[]>([]);
   const [savedExercises, setSavedExercises] = useState<Exercise[]>([]);
@@ -26,6 +28,7 @@ export default function MyPlan() {
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState("");
   const [completedIds, setCompletedIds] = useState<number[]>([]);
+  const [sortBy, setSortBy] = useState<SortOption>("duration");
 
   /* ================= LOAD DATA ================= */
 
@@ -50,7 +53,6 @@ export default function MyPlan() {
   };
 
   useEffect(() => {
-    // Show loading state briefly before rendering the list
     const timer = setTimeout(() => {
       loadData();
     }, 400);
@@ -148,6 +150,24 @@ export default function MyPlan() {
   const activeExercises =
     activeTab === "plan" ? todayPlan : savedExercises;
 
+  /* ================= SORTING ================= */
+
+  const sortedExercises = [...activeExercises].sort((a, b) => {
+    if (sortBy === "duration") {
+      return a.duration - b.duration;
+    }
+
+    if (sortBy === "calories") {
+      return a.caloriesBurned - b.caloriesBurned;
+    }
+
+    if (sortBy === "rating") {
+      return a.rating - b.rating;
+    }
+
+    return 0;
+  });
+
   /* ================= METRICS ================= */
 
   const totalMinutes = todayPlan.reduce(
@@ -190,7 +210,7 @@ export default function MyPlan() {
 
         <section className="px-4 py-8 sm:px-6 lg:px-8">
 
-          {/* ================= HEADER ================= */}
+          {/* HEADER */}
 
           <div>
             <h1 className="text-3xl font-black uppercase tracking-tight text-white sm:text-4xl">
@@ -202,7 +222,7 @@ export default function MyPlan() {
             </p>
           </div>
 
-          {/* ================= METRICS ================= */}
+          {/* METRICS */}
 
           <div className="mt-6 grid grid-cols-1 overflow-hidden rounded-xl border border-[#25282d] bg-[#121419] sm:grid-cols-3">
 
@@ -244,37 +264,78 @@ export default function MyPlan() {
 
           </div>
 
-          {/* ================= TABS ================= */}
+          {/* TABS + SORT */}
 
-          <div className="mt-6 flex w-fit rounded-lg border border-[#25282d] bg-[#121419] p-1">
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 
-            <button
-              onClick={() => setActiveTab("plan")}
-              className={`rounded-md px-5 py-2 text-[9px] font-bold uppercase transition ${
-                activeTab === "plan"
-                  ? "bg-[#252a31] text-white"
-                  : "text-gray-500 hover:text-white"
-              }`}
-            >
-              Today&apos;s Plan
-            </button>
+            {/* TABS */}
 
-            <button
-              onClick={() => setActiveTab("saved")}
-              className={`rounded-md px-5 py-2 text-[9px] font-bold uppercase transition ${
-                activeTab === "saved"
-                  ? "bg-[#252a31] text-white"
-                  : "text-gray-500 hover:text-white"
-              }`}
-            >
-              Saved
-            </button>
+            <div className="flex w-fit rounded-lg border border-[#25282d] bg-[#121419] p-1">
+
+              <button
+                onClick={() => setActiveTab("plan")}
+                className={`rounded-md px-5 py-2 text-[9px] font-bold uppercase transition ${
+                  activeTab === "plan"
+                    ? "bg-[#252a31] text-white"
+                    : "text-gray-500 hover:text-white"
+                }`}
+              >
+                Today&apos;s Plan
+              </button>
+
+              <button
+                onClick={() => setActiveTab("saved")}
+                className={`rounded-md px-5 py-2 text-[9px] font-bold uppercase transition ${
+                  activeTab === "saved"
+                    ? "bg-[#252a31] text-white"
+                    : "text-gray-500 hover:text-white"
+                }`}
+              >
+                Saved
+              </button>
+
+            </div>
+
+            {/* SORT BY */}
+
+            <div className="flex items-center gap-2">
+
+              <label
+                htmlFor="sortBy"
+                className="text-[9px] font-semibold uppercase tracking-wide text-gray-500"
+              >
+                Sort By
+              </label>
+
+              <div className="relative">
+
+                <select
+                  id="sortBy"
+                  value={sortBy}
+                  onChange={(e) =>
+                    setSortBy(e.target.value as SortOption)
+                  }
+                  className="appearance-none rounded-md border border-[#25282d] bg-[#121419] px-3 py-2 pr-8 text-[9px] font-bold uppercase text-gray-300 outline-none transition focus:border-lime-400"
+                >
+                  <option value="duration">Duration</option>
+                  <option value="calories">Calories</option>
+                  <option value="rating">Rating</option>
+                </select>
+
+                <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[8px] text-gray-500">
+                  ▼
+                </span>
+
+              </div>
+
+            </div>
 
           </div>
 
-          {/* ================= EMPTY STATE ================= */}
+          {/* EMPTY STATE */}
 
-          {activeExercises.length === 0 ? (
+          {sortedExercises.length === 0 ? (
+
             <div className="mt-5 flex min-h-[280px] items-center justify-center rounded-xl border border-dashed border-[#25282d] bg-[#0d0f12] px-5 py-10">
 
               <div className="text-center">
@@ -297,13 +358,15 @@ export default function MyPlan() {
               </div>
 
             </div>
+
           ) : (
 
-            /* ================= WORKOUT CARDS ================= */
+            /* WORKOUT CARDS */
 
             <div className="mt-5 space-y-3">
 
-              {activeExercises.map((exercise) => {
+              {sortedExercises.map((exercise) => {
+
                 const isDone = completedIds.includes(exercise.id);
 
                 return (
@@ -321,6 +384,7 @@ export default function MyPlan() {
                       {/* THUMBNAIL */}
 
                       <div className="h-48 w-full shrink-0 overflow-hidden sm:h-auto sm:w-[220px]">
+
                         <img
                           src={exercise.image}
                           alt={exercise.name}
@@ -328,6 +392,7 @@ export default function MyPlan() {
                             isDone ? "grayscale" : ""
                           }`}
                         />
+
                       </div>
 
                       {/* CONTENT */}
@@ -341,6 +406,7 @@ export default function MyPlan() {
                           <div className="flex items-start justify-between gap-4">
 
                             <div>
+
                               <h2
                                 className={`text-lg font-black uppercase ${
                                   isDone
@@ -354,6 +420,7 @@ export default function MyPlan() {
                               <p className="mt-1 text-[9px] font-semibold uppercase tracking-wide text-gray-500">
                                 {exercise.equipment}
                               </p>
+
                             </div>
 
                             {isDone && (
@@ -436,16 +503,21 @@ export default function MyPlan() {
                         </div>
 
                       </div>
+
                     </div>
+
                   </div>
                 );
               })}
 
             </div>
+
           )}
 
         </section>
+
       </div>
+
     </main>
   );
 }
